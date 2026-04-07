@@ -7,9 +7,11 @@ if (!GEMINI_API_KEY) {
   throw new Error("Missing GEMINI_API_KEY environment variable");
 }
 
-const model = createGoogleGenerativeAI({
+const google = createGoogleGenerativeAI({
   apiKey: GEMINI_API_KEY,
 });
+
+const CHAT_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
 async function generateProgrammingLanguages() {
   const prompt = `
@@ -22,7 +24,7 @@ List some popular programming languages along with a brief description of each:
 4.`;
 
   const response = await generateText({
-    model: model("models/gemini-2.5-flash"),
+    model: google(CHAT_MODEL),
     prompt: prompt,
     maxTokens: 512,
   });
@@ -54,7 +56,7 @@ You are a customer support chatbot. Adapt your tone and sentiment based on the f
 `;
 
   const response = await generateText({
-    model: model("models/gemini-2.0-flash"),
+    model: google(CHAT_MODEL),
     prompt: message,
     system: system,
     maxTokens: 512,

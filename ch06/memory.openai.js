@@ -3,6 +3,7 @@ import { ConversationChain } from "langchain/chains";
 import { ChatOpenAI } from "@langchain/openai";
 import { SystemMessage, HumanMessage, AIMessage } from "@langchain/core/messages";
 import { ChatMessageHistory } from "langchain/stores/message/in_memory";
+import { ChatPromptTemplate, MessagesPlaceholder } from "@langchain/core/prompts";
 import "dotenv/config";
 const apiKey = process.env.OPENAI_API_KEY;
 
@@ -16,16 +17,23 @@ pastMessages.push(new AIMessage("Artificial Intelligence (AI) refers to the simu
 const llm = new ChatOpenAI({ apiKey });
 const memory = new BufferMemory({
   chatHistory: new ChatMessageHistory(pastMessages),
+  returnMessages: true,
+  memoryKey: "history",
 });
+
+const prompt = ChatPromptTemplate.fromMessages([
+  new MessagesPlaceholder("history"),
+  ["human", "{input}"],
+]);
 
 const chain = new ConversationChain({ llm, memory, prompt });
 const res1 = await chain.invoke({ input: "Can you give me an example of AI?" });
 console.log({ res1 });
 /*
-Expected Output:
+Expected shape (wording varies):
 {
   res1: {
-    text: "Sure! An example of AI is a virtual assistant like Siri."
+    response: "Sure! An example of AI is a virtual assistant like Siri."
   }
 }
 */
@@ -33,10 +41,10 @@ Expected Output:
 const res2 = await chain.invoke({ input: "What did I just ask you?" });
 console.log({ res2 });
 /*
-Expected Output:
+Expected shape (wording varies):
 {
   res2: {
-    text: "You just asked for an example of artificial intelligence."
+    response: "You just asked for an example of artificial intelligence."
   }
 }
 */

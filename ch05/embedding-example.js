@@ -11,6 +11,10 @@ const google = createGoogleGenerativeAI({
   apiKey: GEMINI_API_KEY,
 });
 
+const embeddingModelId =
+  process.env.GEMINI_EMBEDDING_MODEL || "gemini-embedding-001";
+const embeddingModel = google.textEmbeddingModel(embeddingModelId);
+
 const embeddingDB = {};
 const questions = [
   "How do I reset my password?",
@@ -25,7 +29,7 @@ const answers = [
 // Embed the questions
 for (let i = 0; i < questions.length; i++) {
   const { embedding } = await embed({
-    model: google.textEmbeddingModel("text-embedding-004"),
+    model: embeddingModel,
     value: questions[i],
   });
   embeddingDB[questions[i]] = embedding;
@@ -51,7 +55,7 @@ function cosineSimilarity(embedding1, embedding2) {
 }
 
 const { embedding: queryEmbedding } = await embed({
-  model: google.textEmbeddingModel("text-embedding-004"),
+  model: embeddingModel,
   value: userQuery,
 });
 

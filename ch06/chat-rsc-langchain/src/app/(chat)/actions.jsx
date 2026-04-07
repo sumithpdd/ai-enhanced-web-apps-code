@@ -1,6 +1,6 @@
 'use server';
 
-import { createAI, getMutableAIState, streamUI } from 'ai/rsc';
+import { createAI, getMutableAIState, streamUI } from '@ai-sdk/rsc';
 import ChatBubble from '../../components/chat/ChatBubble';
 import { generateId } from 'ai';
 import { prompt } from '../../lib/fewShotPrompt';

@@ -8,7 +8,6 @@ import ChatBubble from '../../components/chat/ChatBubble';
 import { HumanMessage } from '@langchain/core/messages';
 import { WikipediaQueryRun } from '@langchain/community/tools/wikipedia_query_run';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import { ChatPromptTemplate, MessagesPlaceholder } from '@langchain/core/prompts';
 
 const model = new ChatGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -35,17 +34,13 @@ User: Irish Times
 Action: WikipediaQueryRun(search="Irish Times")
 Response: The Irish Times is an Irish daily broadsheet... [ details]`;
 
-const prompt = ChatPromptTemplate.fromMessages([
-  ['system', AGENT_SYSTEM_TEMPLATE],
-  new MessagesPlaceholder('messages'),
-  new MessagesPlaceholder('agent_scratchpad'),
-]);
-
-
+// LangGraph's createReactAgent only passes `{ messages }` into the prompt step — not
+// `agent_scratchpad` (that was for legacy ReAct chains). Use a string `prompt` to
+// prepend a system message to the graph's message list.
 const agent = createReactAgent({
   llm: model,
   tools,
-  prompt,
+  prompt: AGENT_SYSTEM_TEMPLATE,
 });
 
 const validateInput = (input) => {

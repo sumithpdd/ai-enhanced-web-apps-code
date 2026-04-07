@@ -9,7 +9,10 @@ async function main() {
   }
 
   const google = createGoogleGenerativeAI({ apiKey });
-  const model = google.textEmbeddingModel("text-embedding-004");
+  // text-embedding-004 was removed from the Gemini API; use current embed model.
+  const embeddingModelId =
+    process.env.GEMINI_EMBEDDING_MODEL || "gemini-embedding-001";
+  const model = google.textEmbeddingModel(embeddingModelId);
 
   const inputText = `
 List some popular programming languages along with a brief description of each:

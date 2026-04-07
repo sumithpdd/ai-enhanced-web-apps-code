@@ -15,6 +15,10 @@ import "dotenv/config";
 
 const apiKey = process.env.GEMINI_API_KEY; // Google API key
 
+const EMBEDDING_MODEL =
+  process.env.GEMINI_EMBEDDING_MODEL || "gemini-embedding-001";
+const CHAT_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+
 const text = `Artificial Intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of "intelligent agents": any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals.
 
 As machines become increasingly capable, tasks considered to require "intelligence" are often removed from the definition of AI, a phenomenon known as the AI effect. For instance, optical character recognition is frequently excluded from things considered to be AI, having become a routine technology. Similarly, advances in machine learning have led to significant improvements in natural language processing and computer vision.
@@ -30,7 +34,7 @@ const documents = await splitter.createDocuments([text]);
 
 const googleEmbeddings = new GoogleGenerativeAIEmbeddings({
   apiKey,
-  model: "text-embedding-004",
+  model: EMBEDDING_MODEL,
 });
 
 // Initialize MemoryVectorStore from an array of texts
@@ -52,7 +56,7 @@ const googleRetriever = googleVectorStore.asRetriever();
 
 const googleModel = new ChatGoogleGenerativeAI({
   apiKey,
-  model: "gemini-2.0-flash",
+  model: CHAT_MODEL,
 });
 
 const standaloneQuestionTemplate =

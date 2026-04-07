@@ -4,6 +4,9 @@ import { GoogleGenAI } from '@google/genai';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
+/** Token counting and chat must use a model available on your API key (2.0 Flash is retired for new users). */
+const CHAT_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+
 /**
  * Counts the tokens for a given text string.
  * The `countTokens` method requires the text to be formatted as an array of contents.
@@ -12,7 +15,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 async function countTextTokens(text) {
   try {
     const response = await ai.models.countTokens({
-      model: 'gemini-2.0-flash',
+      model: CHAT_MODEL,
       contents: [{
         parts: [{ text: text }],
       }],
@@ -30,7 +33,7 @@ async function countTextTokens(text) {
 async function countChatTokens(history) {
   try {
     const response = await ai.models.countTokens({
-      model: 'gemini-2.0-flash',
+      model: CHAT_MODEL,
       contents: history,
     });
     console.log("Chat history token count:", response.totalTokens);
@@ -129,7 +132,7 @@ async function main() {
   await countChatTokens(history);
 
   const chat = ai.chats.create({
-    model: "gemini-2.0-flash",
+    model: CHAT_MODEL,
     history: history,
   });
 
@@ -156,13 +159,13 @@ main().catch(console.error);
 // const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 // const prompt = "The quick brown fox jumps over the lazy dog.";
 // const countTokensResponse = await ai.models.countTokens({
-//   model: "gemini-2.0-flash",
+//   model: "gemini-2.5-flash",
 //   contents: prompt,
 // });
 // console.log(countTokensResponse.totalTokens);
 
 // const generateResponse = await ai.models.generateContent({
-//   model: "gemini-2.0-flash",
+//   model: "gemini-2.5-flash",
 //   contents: prompt,
 // });
 // console.log(generateResponse.usageMetadata);

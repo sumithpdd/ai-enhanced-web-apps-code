@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useActions, useUIState } from 'ai/rsc';
+import { useActions, useUIState } from '@ai-sdk/rsc';
 import ChatList from '@/components/chat/ChatList';
 import { Textarea } from '@/components/ui/textarea';
 import useEnterSubmit from '@/hooks/use-enter-submit';
